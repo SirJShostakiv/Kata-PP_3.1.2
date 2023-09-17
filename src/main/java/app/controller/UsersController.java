@@ -1,4 +1,4 @@
-package app.web.controller;
+package app.controller;
 
 import app.model.User;
 import app.model.UserDTO;
