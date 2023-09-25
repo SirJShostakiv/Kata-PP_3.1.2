@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Enter ID</title>
+</head>
+<body>
+<form th:method="GET" th:action="@{/users/{id}}">
+    <label for="id">Enter ID</label>
+    <input name="id" type="text" id="id">
+    <br/>
+    <input type="submit" value="Submit"/>
+</form>
+</body>
+</html>

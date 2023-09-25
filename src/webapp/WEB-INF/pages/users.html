@@ -19,14 +19,8 @@
             <td th:utext="${user.getName()}"></td>
             <td th:utext="${user.getLastName()}"></td>
             <td th:utext="${user.getAge()}"></td>
-            <td>
-                <a th:href="@{/users/{id}/edit(id=${user.getId()})}"
-                   th:text="Edit"></a>
-            </td>
         </tr>
     </table>
-    <br/>
-    <a th:href="@{/users/new}">Add user</a>
 </div>
 </body>
 </html>

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/users")
 @ComponentScan("app")
 public class UsersController {
-    private static final String REDIRECT = "redirect:/users";
+    private static final String REDIRECT = "redirect:/";
     private final UserService userService;
 
     public UsersController(UserService userService) {
@@ -41,14 +41,20 @@ public class UsersController {
         return REDIRECT;
     }
 
-    @GetMapping("/{id}/edit")
-    public String edit(Model model, @PathVariable("id") int id) {
-        model.addAttribute("user", userService.getByID(id));
+    @GetMapping("/enter_id")
+    public String getId() {
+        return "enter_id";
+    }
+
+    @GetMapping("/{id}")
+    public String getEdit(@PathVariable("id") @RequestParam("id") int id, Model model) {
+        User user = userService.getByID(id);
+        model.addAttribute("user", user);
         return "edit";
     }
 
     @PatchMapping("/{id}")
-    public String update(@ModelAttribute("user") UserDTO user, @PathVariable("id") int id) {
+    public String edit(@ModelAttribute("user") UserDTO user, @PathVariable("id") int id) {
         User persistentUser = new User();
         persistentUser.setName(user.getName());
         persistentUser.setLastName(user.getLastName());
@@ -56,7 +62,6 @@ public class UsersController {
         userService.update(persistentUser, id);
         return REDIRECT;
     }
-
     @DeleteMapping("/{id}")
     public String delete(@PathVariable("id") int id) {
         userService.delete(id);
