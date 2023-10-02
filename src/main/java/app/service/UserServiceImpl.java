@@ -1,44 +1,49 @@
 package app.service;
 
-import app.dao.UserDAO;
 import app.model.User;
+import app.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
-    private final UserDAO userDao;
-
-    public UserServiceImpl(UserDAO userDao) {
-        this.userDao = userDao;
+    private final UserRepository userRepository;
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
     @Transactional
     @Override
     public void create(User user) {
-        userDao.create(user);
+        userRepository.save(user);
     }
 
     @Transactional
     @Override
     public List<User> read() {
-        return userDao.read();
+        return userRepository.findAll();
     }
 
     @Transactional
     @Override
-    public void update(User user, int id) {
-        userDao.update(user, id);
+    public void update(String name, String lastName, int age, Long id) {
+        User user = userRepository.getReferenceById(id);
+        user.setName(name);
+        user.setLastName(lastName);
+        user.setAge(age);
+        userRepository.save(user);
     }
 
     @Transactional
     @Override
-    public void delete(int id) {
-        userDao.delete(id);
+    public void delete(Long id) {
+        userRepository.deleteById(id);
     }
 
     @Transactional
     @Override
-    public User getByID(int id) { return userDao.getByID(id);}
+    public User getByID(Long id) { return userRepository.getReferenceById(id);}
 }

@@ -2,7 +2,9 @@ package app.controller;
 
 import app.model.User;
 import app.model.UserDTO;
-import app.service.UserService;
+import app.service.UserServiceImpl;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,15 +15,15 @@ import org.springframework.web.bind.annotation.*;
 @ComponentScan("app")
 public class UsersController {
     private static final String REDIRECT = "redirect:/";
-    private final UserService userService;
-
-    public UsersController(UserService userService) {
-        this.userService = userService;
+    private final UserServiceImpl userServiceImpl;
+    @Autowired
+    public UsersController(UserServiceImpl userServiceImpl) {
+        this.userServiceImpl = userServiceImpl;
     }
 
-    @GetMapping()
+    @GetMapping("/")
     public String getUsers(Model model) {
-        model.addAttribute("users", userService.read());
+        model.addAttribute("users", userServiceImpl.read());
         return "users";
     }
 
@@ -32,12 +34,12 @@ public class UsersController {
     }
 
     @PostMapping()
-    public String create(@ModelAttribute("user") UserDTO user) {
+    public String create(@ModelAttribute("user") @Valid UserDTO user) {
         User persistentUser = new User();
         persistentUser.setName(user.getName());
         persistentUser.setLastName(user.getLastName());
         persistentUser.setAge(user.getAge());
-        userService.create(persistentUser);
+        userServiceImpl.create(persistentUser);
         return REDIRECT;
     }
 
@@ -47,24 +49,24 @@ public class UsersController {
     }
 
     @GetMapping("/{id}")
-    public String getEdit(@PathVariable("id") @RequestParam("id") int id, Model model) {
-        User user = userService.getByID(id);
+    public String getEdit(@PathVariable("id") @RequestParam("id") Long id, Model model) {
+        User user = userServiceImpl.getByID(id);
         model.addAttribute("user", user);
         return "edit";
     }
 
     @PatchMapping("/{id}")
-    public String edit(@ModelAttribute("user") UserDTO user, @PathVariable("id") int id) {
+    public String edit(@ModelAttribute("user") @Valid UserDTO user, @PathVariable("id") Long id) {
         User persistentUser = new User();
         persistentUser.setName(user.getName());
         persistentUser.setLastName(user.getLastName());
         persistentUser.setAge(user.getAge());
-        userService.update(persistentUser, id);
+        userServiceImpl.update(persistentUser.getName(), persistentUser.getLastName(), persistentUser.getAge(), id);
         return REDIRECT;
     }
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable("id") int id) {
-        userService.delete(id);
+    public String delete(@PathVariable("id") Long id) {
+        userServiceImpl.delete(id);
         return REDIRECT;
     }
 }

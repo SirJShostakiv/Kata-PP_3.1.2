@@ -1,19 +1,28 @@
 package app.model;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @NotEmpty(message = "Name shouldnt be empty")
+    @Size(min = 2, max = 25, message = "Name size incorrect")
     private String name;
+    @NotEmpty(message = "Lastname shouldnt be empty")
+    @Size(min = 2, max = 25, message = "Lastname size incorrect")
     private String lastName;
+    @Min(value = 1, message = "Age should be greater than 0")
+    @Digits(integer = 3, fraction = 0, message = "Age max length is 3")
     private int age;
 
-    public User() {
-    }
+    public User() {}
 
     public User(String name, String lastName, int age) {
         this.name = name;
@@ -21,7 +30,7 @@ public class User {
         this.age = age;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
