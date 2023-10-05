@@ -1,9 +1,7 @@
 package app.controller;
 
 import app.model.User;
-import app.model.UserDTO;
 import app.service.UserServiceImpl;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Controller;
@@ -16,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 public class UsersController {
     private static final String REDIRECT = "redirect:/";
     private final UserServiceImpl userServiceImpl;
+
     @Autowired
     public UsersController(UserServiceImpl userServiceImpl) {
         this.userServiceImpl = userServiceImpl;
@@ -34,12 +33,8 @@ public class UsersController {
     }
 
     @PostMapping()
-    public String create(@ModelAttribute("user") @Valid UserDTO user) {
-        User persistentUser = new User();
-        persistentUser.setName(user.getName());
-        persistentUser.setLastName(user.getLastName());
-        persistentUser.setAge(user.getAge());
-        userServiceImpl.create(persistentUser);
+    public String create(@ModelAttribute("user") User user) {
+        userServiceImpl.create(user);
         return REDIRECT;
     }
 
@@ -56,14 +51,11 @@ public class UsersController {
     }
 
     @PatchMapping("/{id}")
-    public String edit(@ModelAttribute("user") @Valid UserDTO user, @PathVariable("id") Long id) {
-        User persistentUser = new User();
-        persistentUser.setName(user.getName());
-        persistentUser.setLastName(user.getLastName());
-        persistentUser.setAge(user.getAge());
-        userServiceImpl.update(persistentUser.getName(), persistentUser.getLastName(), persistentUser.getAge(), id);
+    public String edit(@ModelAttribute("user") User user, @PathVariable("id") Long id) {
+        userServiceImpl.update(user.getName(), user.getLastName(), user.getAge(), id);
         return REDIRECT;
     }
+
     @DeleteMapping("/{id}")
     public String delete(@PathVariable("id") Long id) {
         userServiceImpl.delete(id);
