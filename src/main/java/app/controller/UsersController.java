@@ -8,6 +8,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Controller
 @RequestMapping("/users")
 @ComponentScan("app")
@@ -45,6 +48,10 @@ public class UsersController {
 
     @GetMapping("/{id}")
     public String getEdit(@PathVariable("id") @RequestParam("id") Long id, Model model) {
+        List<Long> idList = new ArrayList<>(userServiceImpl.getIdList());
+        if (!idList.contains(id)) {
+            return "input_error";
+        }
         User user = userServiceImpl.getByID(id);
         model.addAttribute("user", user);
         return "edit";
@@ -52,7 +59,7 @@ public class UsersController {
 
     @PatchMapping("/{id}")
     public String edit(@ModelAttribute("user") User user, @PathVariable("id") Long id) {
-        userServiceImpl.update(user.getName(), user.getLastName(), user.getAge(), id);
+        userServiceImpl.update(user, id);
         return REDIRECT;
     }
 

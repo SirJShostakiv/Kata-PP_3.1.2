@@ -1,7 +1,7 @@
 package app.service;
 
+import app.dao.UserDAOImpl;
 import app.model.User;
-import app.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,40 +10,40 @@ import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
-    private final UserRepository userRepository;
+    private final UserDAOImpl userDAOImpl;
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserServiceImpl(UserDAOImpl userDAOImpl) {
+        this.userDAOImpl = userDAOImpl;
     }
     @Transactional
     @Override
     public void create(User user) {
-        userRepository.save(user);
+        userDAOImpl.create(user);
     }
 
     @Transactional
     @Override
     public List<User> read() {
-        return userRepository.findAll();
+        return userDAOImpl.read();
     }
 
     @Transactional
     @Override
-    public void update(String name, String lastName, int age, Long id) {
-        User user = userRepository.getReferenceById(id);
-        user.setName(name);
-        user.setLastName(lastName);
-        user.setAge(age);
-        userRepository.save(user);
+    public void update(User user, Long id) {
+        userDAOImpl.update(user, id);
     }
 
     @Transactional
     @Override
     public void delete(Long id) {
-        userRepository.deleteById(id);
+        userDAOImpl.delete(id);
     }
 
     @Transactional
     @Override
-    public User getByID(Long id) { return userRepository.getReferenceById(id);}
+    public User getByID(Long id) { return userDAOImpl.getByID(id);}
+    @Override
+    public List<Long> getIdList() {
+        return userDAOImpl.getIdList();
+    }
 }
